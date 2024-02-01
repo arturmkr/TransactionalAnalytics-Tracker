@@ -157,7 +157,7 @@ CREATE EVENT reset_monthly_counters
     SET value = 0
     WHERE counter_name LIKE 'monthly_%';
 
-CREATE EVENT CleanUpOldTransactions
+CREATE EVENT CleanUpOldTransactionLog
     ON SCHEDULE EVERY 1 DAY STARTS TIMESTAMP(CURRENT_DATE, '08:00:00')
     DO
     CALL DeleteOldTransactionsLog();
