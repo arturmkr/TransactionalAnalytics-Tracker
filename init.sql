@@ -80,6 +80,11 @@ BEGIN
     VALUES (txn_id, NOW(), operation);
 END;
 
+CREATE PROCEDURE DeleteOldTransactionsLog()
+BEGIN
+    DELETE FROM transaction_log
+    WHERE created_at < NOW() - INTERVAL 30 DAY;
+END;
 
 CREATE TRIGGER after_transaction_insert_trigger
     AFTER INSERT
@@ -151,3 +156,8 @@ CREATE EVENT reset_monthly_counters
     UPDATE counters
     SET value = 0
     WHERE counter_name LIKE 'monthly_%';
+
+CREATE EVENT CleanUpOldTransactions
+    ON SCHEDULE EVERY 1 DAY STARTS TIMESTAMP(CURRENT_DATE, '08:00:00')
+    DO
+    CALL DeleteOldTransactionsLog();
